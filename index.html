@@ -31,7 +31,7 @@
 {
   "@context": "https://schema.org",
   "@type": "Person",
-  "name": "Mosharraf Hossain",
+  "name": "Mosharraf Hossain Murad",
   "alternateName": "Murad",
   "additionalName": "Murad",
   "jobTitle": "Systems Engineer / Network & ICT Professional",
@@ -160,6 +160,10 @@
     nav.links a{padding:12px 0;border-bottom:1px solid var(--border);}
     nav.links a:last-child{border-bottom:none;}
   }
+  @media (max-width:480px){
+    .brand{font-size:12.5px;gap:7px;}
+    .cmdk-trigger{padding:2px 6px;font-size:10px;}
+  }
 
   /* ---------- GUIDE LINE (signature element, blueprint accent) ---------- */
   .trace-rail{
@@ -202,7 +206,6 @@
   }
 
   section{position:relative;z-index:2;padding:120px 0 40px;}
-  #home{padding-top:0;}
 
   /* ---------- HERO ---------- */
   .hero{
@@ -298,7 +301,9 @@
   .panel-title{
     font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--accent);
     text-transform:uppercase;letter-spacing:0.08em;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border);
+    display:flex;align-items:center;gap:9px;
   }
+  .panel-title svg{width:16px;height:16px;flex-shrink:0;}
   .panel-skill{display:flex;align-items:center;gap:10px;font-size:13.5px;color:var(--text-muted);margin-bottom:11px;}
   .panel-skill:last-child{margin-bottom:0;}
   .led{width:6px;height:6px;border-radius:50%;background:var(--status);box-shadow:0 0 0 3px rgba(52,211,153,0.22);flex-shrink:0;}
@@ -311,6 +316,12 @@
   }
   .cert-card:hover{box-shadow:var(--shadow-md);transform:translateY(-2px);}
   .cert-card .tag{position:absolute;top:16px;right:16px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text-faint);}
+  .cert-icon{
+    width:36px;height:36px;border-radius:9px;margin-bottom:6px;
+    display:flex;align-items:center;justify-content:center;
+    background:var(--accent-soft);border:1px solid var(--accent-line);color:var(--accent);
+  }
+  .cert-icon svg{width:17px;height:17px;}
   .cert-name{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:15px;padding-right:60px;color:var(--text-primary);}
   .cert-issuer{color:var(--text-muted);font-size:13px;}
   .cert-dur{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--accent);margin-top:4px;}
@@ -319,7 +330,14 @@
   .gallery-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
   .gallery-item{background:var(--bg-panel);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:all .3s;box-shadow:var(--shadow-sm);}
   .gallery-item:hover{border-color:var(--accent-line);box-shadow:var(--shadow-md);transform:translateY(-3px);}
-  .gallery-item img{width:100%;aspect-ratio:4/3;object-fit:cover;filter:saturate(1.02) contrast(1.02);}
+  .gallery-item img{width:100%;aspect-ratio:4/3;object-fit:cover;filter:saturate(1.02) contrast(1.02);cursor:zoom-in;}
+  .gallery-item{position:relative;}
+  .gallery-item::after{
+    content:'⤢';position:absolute;top:10px;right:10px;width:28px;height:28px;border-radius:8px;
+    background:rgba(3,6,14,0.55);color:#fff;font-size:14px;display:flex;align-items:center;justify-content:center;
+    opacity:0;transition:opacity .25s;pointer-events:none;backdrop-filter:blur(3px);
+  }
+  .gallery-item:hover::after{opacity:1;}
   .gallery-cap{padding:12px 14px;font-size:12px;color:var(--text-muted);line-height:1.4;border-top:1px solid var(--border);}
   .gallery-item.wide{grid-column:span 2;}
   @media (max-width:900px){
@@ -353,6 +371,12 @@
   .contact-grid{display:grid;grid-template-columns:0.8fr 1.2fr;gap:60px;}
   .contact-info-row{display:flex;align-items:center;gap:14px;padding:15px 0;border-bottom:1px solid var(--border);}
   .contact-info-row:first-child{padding-top:0;}
+  .ci-icon{
+    width:34px;height:34px;border-radius:9px;flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+    background:var(--accent-soft);border:1px solid var(--accent-line);color:var(--accent);
+  }
+  .ci-icon svg{width:16px;height:16px;}
   .ci-label{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--text-faint);text-transform:uppercase;letter-spacing:0.08em;width:70px;flex-shrink:0;}
   .ci-value{font-size:14.5px;color:var(--text-primary);}
   .ci-value a:hover{color:var(--accent);}
@@ -390,6 +414,8 @@
   }
   @media (max-width:600px){
     .panel-grid{grid-template-columns:1fr;}
+    .ci-label{display:none;}
+    .ci-icon{width:30px;height:30px;}
   }
   @media (prefers-reduced-motion: reduce){
     .trace-rail::after{animation:none;display:none;}
@@ -429,6 +455,25 @@
     font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text-faint);
     border:1px solid var(--border-strong);border-radius:6px;padding:2px 7px;margin-left:8px;
   }
+
+  /* ---------- LIGHTBOX (click-to-enlarge) ---------- */
+  .lightbox-overlay{
+    position:fixed;inset:0;z-index:2000;background:rgba(3,6,14,0.92);
+    display:none;align-items:center;justify-content:center;flex-direction:column;gap:16px;
+    padding:40px 20px;backdrop-filter:blur(4px);
+  }
+  .lightbox-overlay.open{display:flex;}
+  .lightbox-overlay img{
+    max-width:min(94vw,1100px);max-height:78vh;width:auto;height:auto;
+    border-radius:10px;box-shadow:var(--shadow-lg);object-fit:contain;
+  }
+  .lightbox-cap{font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--text-muted);max-width:700px;text-align:center;}
+  .lightbox-close{
+    position:absolute;top:22px;right:clamp(20px,5vw,50px);width:42px;height:42px;border-radius:50%;
+    background:var(--bg-panel);border:1px solid var(--border-strong);color:var(--text-primary);
+    font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  }
+  .lightbox-close:hover{border-color:var(--accent);color:var(--accent);}
 </style>
 </head>
 <body>
@@ -461,6 +506,13 @@
   </div>
 </div>
 
+<!-- LIGHTBOX -->
+<div class="lightbox-overlay" id="lightboxOverlay">
+  <button class="lightbox-close" id="lightboxClose" aria-label="Close">✕</button>
+  <img id="lightboxImg" src="" alt="">
+  <div class="lightbox-cap" id="lightboxCap"></div>
+</div>
+
 <main class="wrap">
 
   <!-- HERO -->
@@ -469,13 +521,13 @@
       <div>
         <div class="eyebrow">Status: Available for opportunities</div>
         <h1 class="headline">Keeping <span class="accent-word">networks</span>, terminals &amp; control systems running — with zero downtime.</h1>
-        <p class="hero-sub">I'm Mosharraf Hossain — an Electrical &amp; Electronic Engineer working across network infrastructure, data center operations, and industrial control systems at one of Bangladesh's largest seaports.</p>
+        <p class="hero-sub">I'm Mosharraf Hossain Murad — an Electrical &amp; Electronic Engineer working across network infrastructure, data center operations, and industrial control systems at one of Bangladesh's largest seaports.</p>
         <div class="cta-row">
           <a href="assets/Mosharraf_Hossain_CV.pdf" class="btn btn-primary" download>↓ Download CV</a>
           <a href="#contact" class="btn btn-ghost">Get in touch →</a>
         </div>
         <div class="stat-strip">
-          <div class="stat"><span class="num">2+</span><span class="lbl">Years Experience</span></div>
+          <div class="stat"><span class="num">3+</span><span class="lbl">Years Experience</span></div>
           <div class="stat"><span class="num">10+</span><span class="lbl">Switches &amp; Routers</span></div>
           <div class="stat"><span class="num">20+</span><span class="lbl">Cameras Installed</span></div>
           <div class="stat"><span class="num">10+</span><span class="lbl">Mesh Access Points</span></div>
@@ -484,7 +536,7 @@
       <div class="badge-card">
         <img src="assets/murad.png" alt="Mosharraf Hossain Murad" class="badge-photo">
         <div class="badge-meta">
-          <div class="badge-row"><span class="k">NAME</span><span class="v">Mosharraf Hossain</span></div>
+          <div class="badge-row"><span class="k">NAME</span><span class="v">Mosharraf Hossain Murad</span></div>
           <div class="badge-row"><span class="k">ROLE</span><span class="v">Systems Engineer</span></div>
           <div class="badge-row"><span class="k">BASE</span><span class="v">Chattogram, BD</span></div>
           <div class="badge-row"><span class="k">STATUS</span><span class="v on">● ONLINE</span></div>
@@ -498,9 +550,9 @@
     <span class="node-label">01 · About</span>
     <div class="about-grid">
       <div class="about-text">
-        <h2 class="section-title">Two years of keeping critical systems online.</h2>
+        <h2 class="section-title">3+ years of keeping critical systems online.</h2>
         <p>I'm a detail-oriented <strong>Electrical &amp; Electronic Engineering</strong> professional with hands-on experience across <strong>network infrastructure, data center maintenance, and Terminal Operating Systems (TOS)</strong>. My work has centered on Chittagong Port Authority — configuring 10+ Cisco and BDCOM switches/routers, managing 10+ mesh wireless access points and 20+ CCTV cameras, and resolving complex integration issues that keep one of Bangladesh's busiest seaports running without interruption.</p>
-        <p>Before moving into ICT, I spent time in <strong>industrial automation</strong> — commissioning control systems for H2O2 and H2 plants, installing field instruments to P&amp;ID specification, and routing DCS panel terminations. That background in precision, documentation, and systems-thinking now shapes how I approach every network I manage.</p>
+        <p>Before moving into ICT, I spent over a year in <strong>industrial automation</strong> — commissioning control systems for H2O2 and H2 plants, installing field instruments to P&amp;ID specification, and routing DCS panel terminations. Combined with my ICT career, that adds up to <strong>3+ years of hands-on professional experience</strong> — and that background in precision, documentation, and systems-thinking now shapes how I approach every network I manage.</p>
       </div>
       <div class="quicklist">
         <div class="qrow"><span class="k">Location</span><span class="v">Chattogram, Bangladesh</span></div>
@@ -565,36 +617,36 @@
     <h2 class="section-title" style="margin-bottom:44px;">Core Systems</h2>
     <div class="panel-grid">
       <div class="panel">
-        <div class="panel-title">Networking</div>
+        <div class="panel-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="14" width="20" height="7" rx="1.5"/><path d="M6 14v-3a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v3M6 17.5h.01M10 17.5h.01"/></svg>Networking</div>
         <div class="panel-skill"><span class="led"></span>10+ Cisco &amp; BDCOM switches/routers configured</div>
         <div class="panel-skill"><span class="led"></span>Router setup &amp; VLAN configuration</div>
         <div class="panel-skill"><span class="led"></span>LAN / WAN management</div>
       </div>
       <div class="panel">
-        <div class="panel-title">Wireless &amp; Security</div>
+        <div class="panel-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8.82a15 15 0 0 1 20 0M5 12.86a10 10 0 0 1 14 0M8.5 17a5 5 0 0 1 7 0"/><circle cx="12" cy="20" r="1" fill="currentColor" stroke="none"/></svg>Wireless &amp; Security</div>
         <div class="panel-skill"><span class="led"></span>10+ Sophos &amp; Cambium mesh access points</div>
         <div class="panel-skill"><span class="led"></span>20+ CCTV cameras installed &amp; configured</div>
       </div>
       <div class="panel">
-        <div class="panel-title">Cabling</div>
+        <div class="panel-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2v4M15 2v4M6 6h12l-1 7a5 5 0 0 1-10 0z"/><path d="M12 17v5"/></svg>Cabling</div>
         <div class="panel-skill"><span class="led"></span>Fiber optic cable splicing</div>
         <div class="panel-skill"><span class="led"></span>RJ-45 termination</div>
         <div class="panel-skill"><span class="led"></span>Structured cabling layout</div>
       </div>
       <div class="panel">
-        <div class="panel-title">Data Center</div>
+        <div class="panel-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="7" rx="1.5"/><rect x="2" y="14" width="20" height="7" rx="1.5"/><path d="M6 6.5h.01M6 17.5h.01"/></svg>Data Center</div>
         <div class="panel-skill"><span class="led"></span>Server &amp; computer setup</div>
         <div class="panel-skill"><span class="led"></span>Software installation</div>
         <div class="panel-skill"><span class="led"></span>Printer install &amp; sharing</div>
       </div>
       <div class="panel">
-        <div class="panel-title">Industrial Automation</div>
+        <div class="panel-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Industrial Automation</div>
         <div class="panel-skill"><span class="led"></span>Control system commissioning</div>
         <div class="panel-skill"><span class="led"></span>Field instrument installation</div>
         <div class="panel-skill"><span class="led"></span>DCS panel termination · P&amp;ID reading</div>
       </div>
       <div class="panel">
-        <div class="panel-title">Software &amp; Tools</div>
+        <div class="panel-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>Software &amp; Tools</div>
         <div class="panel-skill"><span class="led"></span>Advanced Excel, Word, PowerPoint</div>
         <div class="panel-skill"><span class="led"></span>AutoCAD (2D/3D)</div>
         <div class="panel-skill"><span class="led"></span>Video editing &amp; graphic design</div>
@@ -610,41 +662,49 @@
     <div class="cert-grid">
       <div class="cert-card">
         <span class="tag mono">72H</span>
+        <span class="cert-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="14" width="20" height="7" rx="1.5"/><path d="M6 14v-3a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v3M6 17.5h.01M10 17.5h.01"/></svg></span>
         <div class="cert-name">CCNA — Cisco Certified Network Associate</div>
         <div class="cert-issuer">CSL Training Institute, Dhaka</div>
       </div>
       <div class="cert-card">
         <span class="tag mono">B2 · 86/100</span>
+        <span class="cert-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span>
         <div class="cert-name">APTIS English Certification</div>
         <div class="cert-issuer">British Council, Sheikh Kamal IT &amp; Incubation Centre</div>
       </div>
       <div class="cert-card">
         <span class="tag mono">3 MO</span>
+        <span class="cert-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20h20M4 20V9l5 4V9l5 4V9l4 3v8"/></svg></span>
         <div class="cert-name">Industrial Training</div>
         <div class="cert-issuer">Chittagong Port Authority</div>
       </div>
       <div class="cert-card">
         <span class="tag mono">216H</span>
+        <span class="cert-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M7 4v16M17 4v16M2 9h5M2 15h5M17 9h5M17 15h5"/></svg></span>
         <div class="cert-name">2D &amp; 3D Animation &amp; Video Editing</div>
         <div class="cert-issuer">Bangladesh Hi-Tech Park Authority</div>
       </div>
       <div class="cert-card">
         <span class="tag mono">200H</span>
+        <span class="cert-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/></svg></span>
         <div class="cert-name">Mobile Application Development</div>
         <div class="cert-issuer">Eze Technology Limited</div>
       </div>
       <div class="cert-card">
         <span class="tag mono">6 MO</span>
+        <span class="cert-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></span>
         <div class="cert-name">Computer Basic &amp; ICT Application</div>
         <div class="cert-issuer">Department of Youth Development, Chattogram</div>
       </div>
       <div class="cert-card">
         <span class="tag mono">6 MO</span>
+        <span class="cert-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 0 20c1.1 0 2-.9 2-2 0-.5-.2-1-.5-1.3-.3-.3-.5-.8-.5-1.2 0-1.1.9-2 2-2h2.5c1.9 0 3.5-1.6 3.5-3.5C21 6.3 17.1 2 12 2z"/><circle cx="7.5" cy="10.5" r="1.2" fill="currentColor" stroke="none"/><circle cx="11" cy="7" r="1.2" fill="currentColor" stroke="none"/><circle cx="16" cy="8.5" r="1.2" fill="currentColor" stroke="none"/></svg></span>
         <div class="cert-name">Professional Graphics Design</div>
         <div class="cert-issuer">Department of Youth Development, Chattogram</div>
       </div>
       <div class="cert-card">
         <span class="tag mono">3 MO</span>
+        <span class="cert-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 14v-3a9 9 0 0 1 18 0v3"/><path d="M21 15.5a2.5 2.5 0 0 1-2.5 2.5H17v-6h1.5a2.5 2.5 0 0 1 2.5 2.5zM3 15.5A2.5 2.5 0 0 0 5.5 18H7v-6H5.5A2.5 2.5 0 0 0 3 14.5z"/></svg></span>
         <div class="cert-name">Professional Customer Service (PCS)</div>
         <div class="cert-issuer">SEIP BACCO Program, Hello World Communication</div>
       </div>
@@ -706,35 +766,35 @@
     <p style="color:var(--text-muted);max-width:560px;margin-bottom:40px;">A look at the terminals, control rooms and plants behind the job titles.</p>
     <div class="gallery-grid">
       <div class="gallery-item wide">
-        <img src="assets/gallery-thesis-poster.webp" alt="Presenting undergraduate thesis project poster">
+        <img class="lightbox-trigger" src="assets/gallery-thesis-poster.webp" data-full="assets/gallery-thesis-poster.webp" alt="Presenting undergraduate thesis project poster" width="1200" height="900" loading="lazy" decoding="async">
         <div class="gallery-cap">Presenting the undergraduate thesis — a floating solar–hydro hybrid microgrid study — at Port City International University, Dec 2025.</div>
       </div>
       <div class="gallery-item">
-        <img src="assets/gallery-thesis-book.webp" alt="Holding the bound thesis project">
+        <img class="lightbox-trigger" src="assets/gallery-thesis-book.webp" data-full="assets/gallery-thesis-book.webp" alt="Holding the bound thesis project" width="1200" height="900" loading="lazy" decoding="async">
         <div class="gallery-cap">With the submitted B.Sc. project: "Smart Hybrid Solar–Wind Microgrid for Reliable Off-Grid Electrification."</div>
       </div>
       <div class="gallery-item">
-        <img src="assets/gallery-office-desk.jpg" alt="At the desk at Chittagong Port Authority overlooking the container yard">
-        <div class="gallery-cap">At the ICT desk, Chittagong Port Authority — container terminal in view.</div>
+        <img class="lightbox-trigger" src="assets/gallery-office-desk.jpg" data-full="assets/gallery-office-desk.jpg" alt="At the office desk at Chittagong Port Authority overlooking the container yard" width="1200" height="900" loading="lazy" decoding="async">
+        <div class="gallery-cap">At my office desk, Chittagong Port Authority — container terminal in view.</div>
       </div>
       <div class="gallery-item">
-        <img src="assets/gallery-tos-monitors.jpg" alt="Monitoring Terminal Operating System screens">
-        <div class="gallery-cap">Monitoring Terminal Operating System (TOS) screens in the data center.</div>
+        <img class="lightbox-trigger" src="assets/gallery-tos-monitors.jpg" data-full="assets/gallery-tos-monitors.jpg" alt="DCS electrical control panel room with a colleague" width="1200" height="900" loading="lazy" decoding="async">
+        <div class="gallery-cap">In the DCS (electrical) control panel room with a colleague, monitoring plant operations.</div>
       </div>
       <div class="gallery-item">
-        <img src="assets/gallery-control-panel.jpg" alt="Reviewing switchgear and control panels with a colleague">
+        <img class="lightbox-trigger" src="assets/gallery-control-panel.jpg" data-full="assets/gallery-control-panel.jpg" alt="Reviewing switchgear and control panels with a colleague" width="1200" height="900" loading="lazy" decoding="async">
         <div class="gallery-cap">Reviewing switchgear &amp; control panels with a colleague.</div>
       </div>
       <div class="gallery-item wide">
-        <img src="assets/gallery-h2o2-plant-night.jpg" alt="H2O2 and H2 plant at Al-Razi Chemical Complex at night">
+        <img class="lightbox-trigger" src="assets/gallery-h2o2-plant-night.jpg" data-full="assets/gallery-h2o2-plant-night.jpg" alt="H2O2 and H2 plant at Al-Razi Chemical Complex at night" width="1200" height="900" loading="lazy" decoding="async">
         <div class="gallery-cap">Al-Razi Chemical Complex — the H2O2 &amp; H2 plant where field instruments were commissioned to P&amp;ID spec.</div>
       </div>
       <div class="gallery-item">
-        <img src="assets/gallery-site-inspection.jpg" alt="On-site inspection during control system commissioning">
+        <img class="lightbox-trigger" src="assets/gallery-site-inspection.jpg" data-full="assets/gallery-site-inspection.jpg" alt="On-site inspection during control system commissioning" width="1200" height="900" loading="lazy" decoding="async">
         <div class="gallery-cap">On-site inspection during control system commissioning.</div>
       </div>
       <div class="gallery-item">
-        <img src="assets/gallery-crane-container.webp" alt="On a quay crane overlooking the container terminal">
+        <img class="lightbox-trigger" src="assets/gallery-crane-container.webp" data-full="assets/gallery-crane-container.webp" alt="On a quay crane overlooking the container terminal" width="1200" height="900" loading="lazy" decoding="async">
         <div class="gallery-cap">On a quay crane, overlooking the container terminal at Chittagong Port.</div>
       </div>
     </div>
@@ -747,17 +807,17 @@
     <p style="color:var(--text-muted);max-width:520px;margin-bottom:44px;">Open to new roles and collaborations in networking, ICT and systems engineering. Reach out directly or send a message below.</p>
     <div class="contact-grid">
       <div>
-        <div class="contact-info-row"><span class="ci-label">Phone</span><span class="ci-value"><a href="tel:+8801824539680">+880 1824-539680</a></span></div>
-        <div class="contact-info-row"><span class="ci-label">Email</span><span class="ci-value"><a href="mailto:mosharrafhossain012@gmail.com">mosharrafhossain012@gmail.com</a></span></div>
-        <div class="contact-info-row"><span class="ci-label">LinkedIn</span><span class="ci-value"><a href="https://linkedin.com/in/mosharraf-hossain-murad" target="_blank" rel="noopener">/in/mosharraf-hossain-murad</a></span></div>
-        <div class="contact-info-row"><span class="ci-label">Instagram</span><span class="ci-value"><a href="https://instagram.com/mosharraf_hossain_murad" target="_blank" rel="noopener">@mosharraf_hossain_murad</a></span></div>
-        <div class="contact-info-row"><span class="ci-label">GitHub</span><span class="ci-value"><a href="https://github.com/muradbd12" target="_blank" rel="noopener">@muradbd12</a></span></div>
-        <div class="contact-info-row"><span class="ci-label">Website</span><span class="ci-value"><a href="https://muradbd12.github.io/bdworld-site/" target="_blank" rel="noopener">muradbd12.github.io/bdworld-site</a></span></div>
-        <div class="contact-info-row"><span class="ci-label">Facebook</span><span class="ci-value"><a href="https://facebook.com/mosharraf.hossain.murad" target="_blank" rel="noopener">@mosharraf.hossain.murad</a></span></div>
-        <div class="contact-info-row"><span class="ci-label">Fiverr</span><span class="ci-value"><a href="https://fiverr.com/eng_murad24" target="_blank" rel="noopener">@eng_murad24</a></span></div>
-        <div class="contact-info-row"><span class="ci-label">X</span><span class="ci-value"><a href="https://x.com/mjmhmurad" target="_blank" rel="noopener">@mjmhmurad</a></span></div>
-        <div class="contact-info-row"><span class="ci-label">Threads</span><span class="ci-value"><a href="https://threads.net/@mosharraf_hossain_murad" target="_blank" rel="noopener">@mosharraf_hossain_murad</a></span></div>
-        <div class="contact-info-row"><span class="ci-label">Based in</span><span class="ci-value">Chattogram, Bangladesh</span></div>
+        <div class="contact-info-row"><span class="ci-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span><span class="ci-label">Phone</span><span class="ci-value"><a href="tel:+8801824539680">+880 1824-539680</a></span></div>
+        <div class="contact-info-row"><span class="ci-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z" style="display:none"/><path d="M22 6.5 12 13 2 6.5"/><rect x="2" y="4.5" width="20" height="15" rx="2"/></svg></span><span class="ci-label">Email</span><span class="ci-value"><a href="mailto:mosharrafhossain012@gmail.com">mosharrafhossain012@gmail.com</a></span></div>
+        <div class="contact-info-row"><span class="ci-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.38-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.11 20.45H3.56V9h3.55v11.45z"/></svg></span><span class="ci-label">LinkedIn</span><span class="ci-value"><a href="https://linkedin.com/in/mosharraf-hossain-murad" target="_blank" rel="noopener">/in/mosharraf-hossain-murad</a></span></div>
+        <div class="contact-info-row"><span class="ci-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></span><span class="ci-label">Instagram</span><span class="ci-value"><a href="https://instagram.com/mosharraf_hossain_murad" target="_blank" rel="noopener">@mosharraf_hossain_murad</a></span></div>
+        <div class="contact-info-row"><span class="ci-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5A11.5 11.5 0 0 0 .5 12c0 5.09 3.29 9.4 7.86 10.93.57.1.79-.25.79-.55 0-.27-.01-1.16-.02-2.11-3.2.7-3.87-1.36-3.87-1.36-.53-1.33-1.28-1.68-1.28-1.68-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.76 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.04 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.79 0c2.2-1.49 3.18-1.18 3.18-1.18.63 1.58.23 2.75.11 3.04.74.81 1.19 1.83 1.19 3.09 0 4.42-2.7 5.4-5.26 5.68.41.36.78 1.07.78 2.15 0 1.55-.01 2.8-.01 3.18 0 .3.21.66.79.55A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5z"/></svg></span><span class="ci-label">GitHub</span><span class="ci-value"><a href="https://github.com/muradbd12" target="_blank" rel="noopener">@muradbd12</a></span></div>
+        <div class="contact-info-row"><span class="ci-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span><span class="ci-label">Website</span><span class="ci-value"><a href="https://muradbd12.github.io/bdworld-site/" target="_blank" rel="noopener">muradbd12.github.io/bdworld-site</a></span></div>
+        <div class="contact-info-row"><span class="ci-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 1 0-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.5 1.49-3.89 3.77-3.89 1.09 0 2.23.2 2.23.2v2.45h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.78l-.44 2.89h-2.34v6.99A10 10 0 0 0 22 12z"/></svg></span><span class="ci-label">Facebook</span><span class="ci-value"><a href="https://facebook.com/mosharraf.hossain.murad" target="_blank" rel="noopener">@mosharraf.hossain.murad</a></span></div>
+        <div class="contact-info-row"><span class="ci-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7h-9a4 4 0 0 0-4 4v7"/><circle cx="7" cy="7" r="2"/><path d="M4 14h6M4 17.5h4"/></svg></span><span class="ci-label">Fiverr</span><span class="ci-value"><a href="https://fiverr.com/eng_murad24" target="_blank" rel="noopener">@eng_murad24</a></span></div>
+        <div class="contact-info-row"><span class="ci-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.24 2h3.35l-7.33 8.38L23 22h-6.76l-5.3-6.93L4.86 22H1.5l7.84-8.97L1 2h6.94l4.79 6.34zm-1.18 18.03h1.86L7.03 3.87H5.03z"/></svg></span><span class="ci-label">X</span><span class="ci-value"><a href="https://x.com/mjmhmurad" target="_blank" rel="noopener">@mjmhmurad</a></span></div>
+        <div class="contact-info-row"><span class="ci-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 2a10 10 0 0 1 0 20 4 4 0 0 1 0-8 2 2 0 0 0 0-4"/></svg></span><span class="ci-label">Threads</span><span class="ci-value"><a href="https://threads.net/@mosharraf_hossain_murad" target="_blank" rel="noopener">@mosharraf_hossain_murad</a></span></div>
+        <div class="contact-info-row"><span class="ci-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span><span class="ci-label">Based in</span><span class="ci-value">Chattogram, Bangladesh</span></div>
       </div>
       <form class="terminal-form" id="contactForm">
         <div class="terminal-head"><span>MESSAGE_COMPOSER.EXE</span><span>READY</span></div>
@@ -910,6 +970,26 @@
   });
   cmdkInput.addEventListener('input', () => { cmdkSelected = 0; renderCmdk(cmdkInput.value); });
   cmdkOverlay.addEventListener('click', (e) => { if (e.target === cmdkOverlay) closeCmdk(); });
+
+  // ---- Lightbox: click any gallery photo to view it full-size ----
+  const lightboxOverlay = document.getElementById('lightboxOverlay');
+  const lightboxImg = document.getElementById('lightboxImg');
+  const lightboxCap = document.getElementById('lightboxCap');
+  const lightboxClose = document.getElementById('lightboxClose');
+
+  document.querySelectorAll('.lightbox-trigger').forEach(img => {
+    img.addEventListener('click', () => {
+      lightboxImg.src = img.getAttribute('data-full') || img.src;
+      lightboxImg.alt = img.alt;
+      const capEl = img.closest('.gallery-item')?.querySelector('.gallery-cap');
+      lightboxCap.textContent = capEl ? capEl.textContent : img.alt;
+      lightboxOverlay.classList.add('open');
+    });
+  });
+  function closeLightbox(){ lightboxOverlay.classList.remove('open'); lightboxImg.src = ''; }
+  lightboxClose.addEventListener('click', closeLightbox);
+  lightboxOverlay.addEventListener('click', (e) => { if (e.target === lightboxOverlay) closeLightbox(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLightbox(); });
 </script>
 
 </body>
