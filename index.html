@@ -131,6 +131,8 @@
   }
   nav.links a:hover{color:var(--accent);}
   nav.links a span{color:var(--text-faint);margin-right:6px;}
+  nav.links a.active{color:var(--accent);}
+  nav.links a.active span{color:var(--accent);}
   .nav-cta{
     font-family:'IBM Plex Mono',monospace;font-size:12px;padding:9px 18px;
     border:1px solid var(--border-strong);border-radius:20px;color:var(--text-primary);
@@ -138,6 +140,24 @@
   }
   .nav-cta:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft);}
   .menu-toggle{display:none;}
+  @media (max-width:900px){
+    .menu-toggle{
+      display:flex;flex-direction:column;gap:5px;background:transparent;border:none;cursor:pointer;padding:6px;
+    }
+    .menu-toggle span{width:20px;height:2px;background:var(--text-primary);border-radius:2px;transition:all .25s;}
+    .menu-toggle.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+    .menu-toggle.open span:nth-child(2){opacity:0;}
+    .menu-toggle.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+    nav.links{
+      display:none;position:absolute;top:100%;left:0;right:0;
+      background:var(--bg-panel);flex-direction:column;gap:0;
+      padding:8px clamp(20px,5vw,64px) 16px;border-bottom:1px solid var(--border-strong);
+      box-shadow:var(--shadow-md);
+    }
+    nav.links.open{display:flex;}
+    nav.links a{padding:12px 0;border-bottom:1px solid var(--border);}
+    nav.links a:last-child{border-bottom:none;}
+  }
 
   /* ---------- GUIDE LINE (signature element, blueprint accent) ---------- */
   .trace-rail{
@@ -357,9 +377,9 @@
     .badge-card{margin-left:0;max-width:280px;}
     .panel-grid{grid-template-columns:repeat(2,1fr);}
     .cert-grid{grid-template-columns:1fr;}
-    nav.links{display:none;}
     .trace-rail,.node::before,.node::after{display:none;}
     .node{padding-left:0;}
+    #desktopCta{display:none;}
   }
   @media (max-width:600px){
     .panel-grid{grid-template-columns:1fr;}
@@ -371,6 +391,37 @@
   a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible{
     outline:2px solid var(--accent);outline-offset:2px;
   }
+
+  /* ---------- COMMAND PALETTE (Ctrl+K) ---------- */
+  .cmdk-overlay{
+    position:fixed;inset:0;z-index:1000;background:rgba(18,22,31,0.45);backdrop-filter:blur(2px);
+    display:none;align-items:flex-start;justify-content:center;padding-top:14vh;
+  }
+  .cmdk-overlay.open{display:flex;}
+  .cmdk-box{
+    width:min(520px,90vw);background:var(--bg-panel);border:1px solid var(--border-strong);
+    border-radius:14px;box-shadow:var(--shadow-lg);overflow:hidden;
+  }
+  .cmdk-input{
+    width:100%;border:none;border-bottom:1px solid var(--border);padding:16px 18px;
+    font-family:'Inter',sans-serif;font-size:15px;color:var(--text-primary);background:transparent;
+  }
+  .cmdk-input:focus{outline:none;}
+  .cmdk-list{list-style:none;max-height:320px;overflow-y:auto;padding:8px;}
+  .cmdk-item{
+    display:flex;align-items:center;justify-content:space-between;gap:10px;
+    padding:11px 12px;border-radius:8px;cursor:pointer;font-size:13.5px;color:var(--text-muted);
+  }
+  .cmdk-item:hover,.cmdk-item.sel{background:var(--accent-soft);color:var(--text-primary);}
+  .cmdk-item .k{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--text-faint);}
+  .cmdk-hint{
+    display:flex;gap:12px;padding:10px 16px;border-top:1px solid var(--border);
+    font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--text-faint);
+  }
+  .cmdk-trigger{
+    font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text-faint);
+    border:1px solid var(--border-strong);border-radius:6px;padding:2px 7px;margin-left:8px;
+  }
 </style>
 </head>
 <body>
@@ -380,16 +431,28 @@
 
 <header class="topnav">
   <div class="brand"><span class="dot"></span> MOSHARRAF HOSSAIN MURAD</div>
-  <nav class="links">
+  <nav class="links" id="navLinks">
     <a href="#about"><span>N01</span>About</a>
     <a href="#experience"><span>N02</span>Experience</a>
     <a href="#skills"><span>N03</span>Skills</a>
     <a href="#certifications"><span>N04</span>Certs</a>
     <a href="#education"><span>N05</span>Education</a>
     <a href="#gallery"><span>N06</span>Fieldwork</a>
+    <a href="#contact"><span>N07</span>Contact</a>
   </nav>
-  <a href="#contact" class="nav-cta">N07 · Contact</a>
+  <a href="#contact" class="nav-cta" id="desktopCta">N07 · Contact</a>
+  <button class="cmdk-trigger mono" id="cmdkTrigger" style="cursor:pointer;background:var(--bg-panel);" title="Quick navigate">⌘K</button>
+  <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
 </header>
+
+<!-- COMMAND PALETTE -->
+<div class="cmdk-overlay" id="cmdkOverlay">
+  <div class="cmdk-box">
+    <input class="cmdk-input" id="cmdkInput" type="text" placeholder="Jump to a section or run a command…" autocomplete="off">
+    <ul class="cmdk-list" id="cmdkList"></ul>
+    <div class="cmdk-hint"><span>↑↓ navigate</span><span>↵ select</span><span>esc close</span></div>
+  </div>
+</div>
 
 <main class="wrap">
 
@@ -704,7 +767,7 @@
           <textarea id="cf-message" name="message" required placeholder="What would you like to discuss?"></textarea>
         </div>
         <button type="submit" class="submit-btn">Send message →</button>
-        <div class="form-note">Opens your email app addressed to Mosharraf, with your message pre-filled.</div>
+        <div class="form-note">Sends directly — no email app needed.</div>
       </form>
     </div>
   </section>
@@ -717,15 +780,129 @@
 </footer>
 
 <script>
-  document.getElementById('contactForm').addEventListener('submit', function(e){
+  // ---- Contact form via Web3Forms (no email client popup) ----
+  // Get a free access key at https://web3forms.com and paste it below.
+  const WEB3FORMS_KEY = "YOUR_WEB3FORMS_ACCESS_KEY";
+  document.getElementById('contactForm').addEventListener('submit', async function(e){
     e.preventDefault();
-    const name = document.getElementById('cf-name').value;
-    const email = document.getElementById('cf-email').value;
-    const message = document.getElementById('cf-message').value;
-    const subject = encodeURIComponent('Portfolio inquiry from ' + name);
-    const body = encodeURIComponent(message + '\n\n— ' + name + ' (' + email + ')');
-    window.location.href = 'mailto:mosharrafhossain012@gmail.com?subject=' + subject + '&body=' + body;
+    const btn = this.querySelector('button.submit-btn');
+    const originalText = btn.textContent;
+
+    if (WEB3FORMS_KEY === "YOUR_WEB3FORMS_ACCESS_KEY") {
+      // Fallback until a real key is added: open the mail client instead.
+      const name = document.getElementById('cf-name').value;
+      const email = document.getElementById('cf-email').value;
+      const message = document.getElementById('cf-message').value;
+      const subject = encodeURIComponent('Portfolio inquiry from ' + name);
+      const body = encodeURIComponent(message + '\n\n— ' + name + ' (' + email + ')');
+      window.location.href = 'mailto:mosharrafhossain012@gmail.com?subject=' + subject + '&body=' + body;
+      return;
+    }
+
+    btn.textContent = 'Sending…';
+    btn.disabled = true;
+    const formData = new FormData(this);
+    formData.append('access_key', WEB3FORMS_KEY);
+    formData.append('subject', 'New message from your portfolio site');
+    try {
+      const response = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: formData });
+      const data = await response.json();
+      if (data.success) {
+        btn.textContent = 'Message sent ✓';
+        this.reset();
+      } else {
+        btn.textContent = 'Something went wrong — try again';
+      }
+    } catch (err) {
+      btn.textContent = 'Network error — try again';
+    }
+    setTimeout(() => { btn.textContent = originalText; btn.disabled = false; }, 3000);
   });
+
+  // ---- Mobile hamburger menu ----
+  const menuToggle = document.getElementById('menuToggle');
+  const navLinksEl = document.getElementById('navLinks');
+  menuToggle.addEventListener('click', () => {
+    menuToggle.classList.toggle('open');
+    navLinksEl.classList.toggle('open');
+  });
+  navLinksEl.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => {
+      menuToggle.classList.remove('open');
+      navLinksEl.classList.remove('open');
+    });
+  });
+
+  // ---- Scrollspy: highlight the active section in the nav ----
+  const spySections = document.querySelectorAll('main section[id]');
+  const spyLinks = document.querySelectorAll('nav.links a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    spySections.forEach(section => {
+      if (window.pageYOffset >= section.offsetTop - 160) current = section.getAttribute('id');
+    });
+    spyLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + current));
+  }, { passive: true });
+
+  // ---- Command palette (Ctrl+K / Cmd+K) ----
+  const cmdItems = [
+    { label: 'About', href: '#about', tag: 'N01' },
+    { label: 'Experience', href: '#experience', tag: 'N02' },
+    { label: 'Skills', href: '#skills', tag: 'N03' },
+    { label: 'Certifications', href: '#certifications', tag: 'N04' },
+    { label: 'Education', href: '#education', tag: 'N05' },
+    { label: 'Fieldwork gallery', href: '#gallery', tag: 'N06' },
+    { label: 'Contact', href: '#contact', tag: 'N07' },
+    { label: 'Download CV (PDF)', href: 'assets/Mosharraf_Hossain_CV.pdf', tag: '↓' },
+  ];
+  const cmdkOverlay = document.getElementById('cmdkOverlay');
+  const cmdkInput = document.getElementById('cmdkInput');
+  const cmdkList = document.getElementById('cmdkList');
+  let cmdkSelected = 0;
+
+  function renderCmdk(filter = '') {
+    const filtered = cmdItems.filter(i => i.label.toLowerCase().includes(filter.toLowerCase()));
+    cmdkList.innerHTML = filtered.map((item, idx) =>
+      `<li class="cmdk-item${idx === cmdkSelected ? ' sel' : ''}" data-href="${item.href}"><span>${item.label}</span><span class="k">${item.tag}</span></li>`
+    ).join('');
+    cmdkList.querySelectorAll('.cmdk-item').forEach((el, idx) => {
+      el.addEventListener('click', () => goTo(filtered[idx].href));
+    });
+  }
+  function goTo(href) {
+    closeCmdk();
+    if (href.endsWith('.pdf')) { window.open(href, '_blank'); }
+    else { document.querySelector(href).scrollIntoView({ behavior: 'smooth' }); }
+  }
+  function openCmdk() {
+    cmdkOverlay.classList.add('open');
+    cmdkInput.value = '';
+    cmdkSelected = 0;
+    renderCmdk();
+    setTimeout(() => cmdkInput.focus(), 30);
+  }
+  function closeCmdk() {
+    cmdkOverlay.classList.remove('open');
+  }
+  document.getElementById('cmdkTrigger').addEventListener('click', openCmdk);
+  document.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+      e.preventDefault();
+      cmdkOverlay.classList.contains('open') ? closeCmdk() : openCmdk();
+    }
+    if (e.key === 'Escape') closeCmdk();
+    if (cmdkOverlay.classList.contains('open')) {
+      const items = cmdkList.querySelectorAll('.cmdk-item');
+      if (e.key === 'ArrowDown') { e.preventDefault(); cmdkSelected = Math.min(cmdkSelected + 1, items.length - 1); renderCmdk(cmdkInput.value); }
+      if (e.key === 'ArrowUp') { e.preventDefault(); cmdkSelected = Math.max(cmdkSelected - 1, 0); renderCmdk(cmdkInput.value); }
+      if (e.key === 'Enter') {
+        const filtered = cmdItems.filter(i => i.label.toLowerCase().includes(cmdkInput.value.toLowerCase()));
+        if (filtered[cmdkSelected]) goTo(filtered[cmdkSelected].href);
+      }
+    }
+  });
+  cmdkInput.addEventListener('input', () => { cmdkSelected = 0; renderCmdk(cmdkInput.value); });
+  cmdkOverlay.addEventListener('click', (e) => { if (e.target === cmdkOverlay) closeCmdk(); });
 </script>
 
 </body>
