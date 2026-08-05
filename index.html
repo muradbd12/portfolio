@@ -1135,8 +1135,8 @@
   lightboxOverlay.addEventListener('click', (e) => { if (e.target === lightboxOverlay) closeLightbox(); });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLightbox(); });
 
-  // ---- Password-gated CV download (premium modal, masked input) ----
-  const CV_PASSWORD = "687235827";
+  // ---- Password-gated CV download (premium modal, masked input, hashed check) ----
+  const CV_PASSWORD_HASH = "926f834d0e2682864cfb9fc987ce666458b3c86e36ca51d981c3953d194ecb93";
   const CV_PATH = "assets/Mosharraf_Hossain_CV.pdf";
   const pwOverlay = document.getElementById('pwOverlay');
   const pwBox = pwOverlay.querySelector('.pw-box');
@@ -1145,6 +1145,11 @@
   const pwError = document.getElementById('pwError');
   const pwClose = document.getElementById('pwClose');
   const pwToggle = document.getElementById('pwToggle');
+
+  async function sha256Hex(text) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+  }
 
   function requestCvDownload() {
     pwInput.value = '';
@@ -1163,9 +1168,10 @@
     pwInput.type = pwInput.type === 'password' ? 'text' : 'password';
     pwInput.focus();
   });
-  pwForm.addEventListener('submit', (e) => {
+  pwForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    if (pwInput.value.trim() === CV_PASSWORD) {
+    const enteredHash = await sha256Hex(pwInput.value.trim());
+    if (enteredHash === CV_PASSWORD_HASH) {
       const link = document.createElement('a');
       link.href = CV_PATH;
       link.download = 'Mosharraf_Hossain_CV.pdf';
