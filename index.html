@@ -553,7 +553,7 @@
         <h1 class="headline">Keeping <span class="accent-word">networks</span>, terminals &amp; control systems running — with zero downtime.</h1>
         <p class="hero-sub">I'm Mosharraf Hossain Murad — an Electrical &amp; Electronic Engineer working across network infrastructure, data center operations, and industrial control systems at one of Bangladesh's largest seaports.</p>
         <div class="cta-row">
-          <a href="assets/Mosharraf_Hossain_CV.pdf" class="btn btn-primary" download>↓ Download CV</a>
+          <a href="assets/Mosharraf_Hossain_CV.pdf" class="btn btn-primary" id="downloadCvBtn">↓ Download CV</a>
           <a href="#contact" class="btn btn-ghost">Get in touch →</a>
         </div>
         <div class="stat-strip">
@@ -985,7 +985,7 @@
   }
   function goTo(href) {
     closeCmdk();
-    if (href.endsWith('.pdf')) { window.open(href, '_blank'); }
+    if (href.endsWith('.pdf')) { requestCvDownload(); }
     else { document.querySelector(href).scrollIntoView({ behavior: 'smooth' }); }
   }
   function openCmdk() {
@@ -1037,6 +1037,28 @@
   lightboxClose.addEventListener('click', closeLightbox);
   lightboxOverlay.addEventListener('click', (e) => { if (e.target === lightboxOverlay) closeLightbox(); });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLightbox(); });
+
+  // ---- Password-gated CV download ----
+  const CV_PASSWORD = "687235827";
+  const CV_PATH = "assets/Mosharraf_Hossain_CV.pdf";
+  function requestCvDownload() {
+    const pass = window.prompt("This CV is password-protected.\nEnter the password to download:");
+    if (pass === null) return;
+    if (pass.trim() === CV_PASSWORD) {
+      const link = document.createElement('a');
+      link.href = CV_PATH;
+      link.download = 'Mosharraf_Hossain_CV.pdf';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } else {
+      alert('Incorrect password. Please try again.');
+    }
+  }
+  document.getElementById('downloadCvBtn').addEventListener('click', (e) => {
+    e.preventDefault();
+    requestCvDownload();
+  });
 </script>
 
 </body>
