@@ -504,6 +504,77 @@
     font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;
   }
   .lightbox-close:hover{border-color:var(--accent);color:var(--accent);}
+
+  /* ---------- CV PASSWORD MODAL (premium) ---------- */
+  .pw-overlay{
+    position:fixed;inset:0;z-index:2100;background:rgba(3,6,14,0.72);
+    display:none;align-items:center;justify-content:center;padding:20px;
+    backdrop-filter:blur(6px);
+  }
+  .pw-overlay.open{display:flex;}
+  .pw-box{
+    position:relative;width:min(380px,100%);text-align:center;
+    padding:36px 30px 30px;border-radius:20px;
+    background:linear-gradient(160deg, var(--bg-panel) 0%, var(--bg-panel-alt) 100%);
+    border:1px solid var(--accent-line);
+    box-shadow:0 30px 70px -20px rgba(0,0,0,0.7), 0 0 60px var(--accent-glow), inset 0 1px 0 rgba(255,255,255,0.04);
+    animation:pw-pop .3s cubic-bezier(.2,1.4,.4,1);
+  }
+  @keyframes pw-pop{
+    0%{opacity:0;transform:scale(.92) translateY(8px);}
+    100%{opacity:1;transform:scale(1) translateY(0);}
+  }
+  .pw-box.shake{animation:pw-shake .4s;}
+  @keyframes pw-shake{
+    0%,100%{transform:translateX(0);}
+    20%{transform:translateX(-8px);}
+    40%{transform:translateX(7px);}
+    60%{transform:translateX(-5px);}
+    80%{transform:translateX(4px);}
+  }
+  .pw-close{
+    position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:50%;
+    background:transparent;border:1px solid var(--border-strong);color:var(--text-faint);
+    cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;transition:all .2s;
+  }
+  .pw-close:hover{color:var(--accent);border-color:var(--accent);}
+  .pw-icon{
+    width:60px;height:60px;margin:0 auto 18px;border-radius:16px;
+    display:flex;align-items:center;justify-content:center;
+    background:radial-gradient(circle at 35% 30%, var(--accent-soft), transparent 70%), var(--bg-panel-alt);
+    border:1px solid var(--accent-line);color:var(--accent);
+    box-shadow:0 0 30px var(--accent-glow);
+  }
+  .pw-icon svg{width:26px;height:26px;}
+  .pw-title{font-size:19px;margin-bottom:8px;color:var(--text-primary);}
+  .pw-sub{font-size:13px;color:var(--text-muted);margin-bottom:24px;line-height:1.5;}
+  .pw-input-row{position:relative;margin-bottom:8px;}
+  .pw-input{
+    width:100%;background:var(--bg);border:1px solid var(--border-strong);border-radius:12px;
+    padding:14px 46px 14px 18px;color:var(--text-primary);font-size:18px;letter-spacing:4px;
+    font-family:'IBM Plex Mono',monospace;text-align:center;transition:all .2s;
+  }
+  .pw-input::placeholder{letter-spacing:2px;color:var(--text-faint);}
+  .pw-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft);}
+  .pw-toggle{
+    position:absolute;right:6px;top:50%;transform:translateY(-50%);width:34px;height:34px;
+    border:none;background:transparent;color:var(--text-faint);cursor:pointer;
+    display:flex;align-items:center;justify-content:center;border-radius:8px;transition:color .2s;
+  }
+  .pw-toggle:hover{color:var(--accent);}
+  .pw-toggle svg{width:18px;height:18px;}
+  .pw-error{
+    font-size:12.5px;color:#f87171;margin:10px 0 4px;min-height:16px;opacity:0;transition:opacity .2s;
+  }
+  .pw-error.show{opacity:1;}
+  .pw-submit{
+    width:100%;margin-top:14px;padding:14px 20px;border:none;border-radius:12px;cursor:pointer;
+    font-family:'Inter',sans-serif;font-size:14.5px;font-weight:600;color:var(--on-accent);
+    background:linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+    box-shadow:0 10px 28px -8px var(--accent-glow);transition:transform .2s, box-shadow .2s;
+  }
+  .pw-submit:hover{transform:translateY(-2px);box-shadow:0 14px 34px -6px var(--accent-glow);}
+  .pw-submit:active{transform:translateY(0);}
 </style>
 </head>
 <body>
@@ -541,6 +612,32 @@
   <button class="lightbox-close" id="lightboxClose" aria-label="Close">✕</button>
   <img id="lightboxImg" src="" alt="">
   <div class="lightbox-cap" id="lightboxCap"></div>
+</div>
+
+<!-- CV PASSWORD MODAL -->
+<div class="pw-overlay" id="pwOverlay">
+  <div class="pw-box">
+    <button class="pw-close" id="pwClose" aria-label="Close">✕</button>
+    <div class="pw-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="4" y="11" width="16" height="10" rx="2.5"/>
+        <path d="M8 11V7a4 4 0 0 1 8 0v4"/>
+        <circle cx="12" cy="16" r="1.6" fill="currentColor" stroke="none"/>
+      </svg>
+    </div>
+    <h3 class="pw-title">Protected Document</h3>
+    <p class="pw-sub">Enter the password to download Mosharraf's CV</p>
+    <form id="pwForm" autocomplete="off">
+      <div class="pw-input-row">
+        <input type="password" id="pwInput" class="pw-input" placeholder="••••••••" autocomplete="new-password" inputmode="numeric">
+        <button type="button" class="pw-toggle" id="pwToggle" aria-label="Show password" tabindex="-1">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+      </div>
+      <div class="pw-error" id="pwError">Incorrect password — please try again.</div>
+      <button type="submit" class="pw-submit">Unlock &amp; Download</button>
+    </form>
+  </div>
 </div>
 
 <main class="wrap">
@@ -1038,23 +1135,53 @@
   lightboxOverlay.addEventListener('click', (e) => { if (e.target === lightboxOverlay) closeLightbox(); });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLightbox(); });
 
-  // ---- Password-gated CV download ----
+  // ---- Password-gated CV download (premium modal, masked input) ----
   const CV_PASSWORD = "687235827";
   const CV_PATH = "assets/Mosharraf_Hossain_CV.pdf";
+  const pwOverlay = document.getElementById('pwOverlay');
+  const pwBox = pwOverlay.querySelector('.pw-box');
+  const pwForm = document.getElementById('pwForm');
+  const pwInput = document.getElementById('pwInput');
+  const pwError = document.getElementById('pwError');
+  const pwClose = document.getElementById('pwClose');
+  const pwToggle = document.getElementById('pwToggle');
+
   function requestCvDownload() {
-    const pass = window.prompt("This CV is password-protected.\nEnter the password to download:");
-    if (pass === null) return;
-    if (pass.trim() === CV_PASSWORD) {
+    pwInput.value = '';
+    pwInput.type = 'password';
+    pwError.classList.remove('show');
+    pwOverlay.classList.add('open');
+    setTimeout(() => pwInput.focus(), 50);
+  }
+  function closePwModal() {
+    pwOverlay.classList.remove('open');
+  }
+  pwClose.addEventListener('click', closePwModal);
+  pwOverlay.addEventListener('click', (e) => { if (e.target === pwOverlay) closePwModal(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && pwOverlay.classList.contains('open')) closePwModal(); });
+  pwToggle.addEventListener('click', () => {
+    pwInput.type = pwInput.type === 'password' ? 'text' : 'password';
+    pwInput.focus();
+  });
+  pwForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (pwInput.value.trim() === CV_PASSWORD) {
       const link = document.createElement('a');
       link.href = CV_PATH;
       link.download = 'Mosharraf_Hossain_CV.pdf';
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+      closePwModal();
     } else {
-      alert('Incorrect password. Please try again.');
+      pwError.classList.add('show');
+      pwBox.classList.remove('shake');
+      void pwBox.offsetWidth; // restart animation
+      pwBox.classList.add('shake');
+      pwInput.value = '';
+      pwInput.focus();
     }
-  }
+  });
   document.getElementById('downloadCvBtn').addEventListener('click', (e) => {
     e.preventDefault();
     requestCvDownload();
