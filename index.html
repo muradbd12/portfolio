@@ -575,6 +575,24 @@
   }
   .pw-submit:hover{transform:translateY(-2px);box-shadow:0 14px 34px -6px var(--accent-glow);}
   .pw-submit:active{transform:translateY(0);}
+
+  .docs-box{padding-bottom:26px;}
+  .docs-list{list-style:none;text-align:left;margin-top:6px;}
+  .docs-item{
+    display:flex;align-items:center;gap:12px;padding:13px 14px;border-radius:12px;
+    border:1px solid var(--border);background:var(--bg);cursor:pointer;margin-bottom:10px;transition:all .2s;
+  }
+  .docs-item:last-child{margin-bottom:0;}
+  .docs-item:hover{border-color:var(--accent-line);background:var(--accent-soft);transform:translateX(2px);}
+  .docs-item .di-icon{
+    width:36px;height:36px;border-radius:9px;flex-shrink:0;display:flex;align-items:center;justify-content:center;
+    background:var(--accent-soft);border:1px solid var(--accent-line);color:var(--accent);
+  }
+  .docs-item .di-icon svg{width:16px;height:16px;}
+  .docs-item .di-text{flex:1;}
+  .docs-item .di-name{font-size:13.5px;color:var(--text-primary);font-weight:500;}
+  .docs-item .di-sub{font-size:11px;color:var(--text-faint);font-family:'IBM Plex Mono',monospace;margin-top:2px;}
+  .docs-item .di-arrow{color:var(--text-faint);font-size:16px;}
 </style>
 </head>
 <body>
@@ -614,7 +632,22 @@
   <div class="lightbox-cap" id="lightboxCap"></div>
 </div>
 
-<!-- CV PASSWORD MODAL -->
+<!-- DOCUMENTS LIST MODAL -->
+<div class="pw-overlay" id="docsOverlay">
+  <div class="pw-box docs-box">
+    <button class="pw-close" id="docsClose" aria-label="Close">✕</button>
+    <div class="pw-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>
+      </svg>
+    </div>
+    <h3 class="pw-title">Documents</h3>
+    <p class="pw-sub">Select a document — password required to view</p>
+    <ul class="docs-list" id="docsList"></ul>
+  </div>
+</div>
+
+<!-- PASSWORD MODAL -->
 <div class="pw-overlay" id="pwOverlay">
   <div class="pw-box">
     <button class="pw-close" id="pwClose" aria-label="Close">✕</button>
@@ -626,7 +659,7 @@
       </svg>
     </div>
     <h3 class="pw-title">Protected Document</h3>
-    <p class="pw-sub">Enter the password to download Mosharraf's CV</p>
+    <p class="pw-sub" id="pwSub">Enter the password to view this document</p>
     <form id="pwForm" autocomplete="off">
       <div class="pw-input-row">
         <input type="password" id="pwInput" class="pw-input" placeholder="••••••••" autocomplete="new-password" inputmode="numeric">
@@ -635,7 +668,7 @@
         </button>
       </div>
       <div class="pw-error" id="pwError">Incorrect password — please try again.</div>
-      <button type="submit" class="pw-submit">Unlock &amp; Download</button>
+      <button type="submit" class="pw-submit">Unlock &amp; Preview</button>
     </form>
   </div>
 </div>
@@ -650,7 +683,7 @@
         <h1 class="headline">Keeping <span class="accent-word">networks</span>, terminals &amp; control systems running — with zero downtime.</h1>
         <p class="hero-sub">I'm Mosharraf Hossain Murad — an Electrical &amp; Electronic Engineer working across network infrastructure, data center operations, and industrial control systems at one of Bangladesh's largest seaports.</p>
         <div class="cta-row">
-          <a href="assets/Mosharraf_Hossain_CV.pdf" class="btn btn-primary" id="downloadCvBtn">↓ Download CV</a>
+          <a href="#" class="btn btn-primary" id="openDocsBtn">📄 Documents</a>
           <a href="#contact" class="btn btn-ghost">Get in touch →</a>
         </div>
         <div class="stat-strip">
@@ -1064,7 +1097,7 @@
     { label: 'Education', href: '#education', tag: 'N05' },
     { label: 'Fieldwork gallery', href: '#gallery', tag: 'N06' },
     { label: 'Contact', href: '#contact', tag: 'N07' },
-    { label: 'Download CV (PDF)', href: 'assets/Mosharraf_Hossain_CV.pdf', tag: '↓' },
+    { label: 'Documents (CV, Certificate, Cover Letter)', href: 'docs', tag: '📄' },
   ];
   const cmdkOverlay = document.getElementById('cmdkOverlay');
   const cmdkInput = document.getElementById('cmdkInput');
@@ -1082,7 +1115,7 @@
   }
   function goTo(href) {
     closeCmdk();
-    if (href.endsWith('.pdf')) { requestCvDownload(); }
+    if (href === 'docs') { openDocsList(); }
     else { document.querySelector(href).scrollIntoView({ behavior: 'smooth' }); }
   }
   function openCmdk() {
@@ -1135,9 +1168,22 @@
   lightboxOverlay.addEventListener('click', (e) => { if (e.target === lightboxOverlay) closeLightbox(); });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLightbox(); });
 
-  // ---- Password-gated CV download (premium modal, masked input, hashed check) ----
-  const CV_PASSWORD_HASH = "926f834d0e2682864cfb9fc987ce666458b3c86e36ca51d981c3953d194ecb93";
-  const CV_PATH = "assets/Mosharraf_Hossain_CV.pdf";
+  // ---- Documents list + password-gated preview (hashed check, no file-level password) ----
+  const DOC_PASSWORD_HASH = "926f834d0e2682864cfb9fc987ce666458b3c86e36ca51d981c3953d194ecb93";
+  const DOCUMENTS = [
+    { name: 'Curriculum Vitae (CV)', sub: 'PDF · 2 pages', file: 'assets/Mosharraf_Hossain_CV.pdf',
+      icon: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 13h6M9 17h6"/>' },
+    { name: 'AI for Smart Productivity — Certificate', sub: 'PDF · Batch 4', file: 'assets/ai-workshop-certificate.pdf',
+      icon: '<circle cx="12" cy="8" r="5"/><path d="M8.5 12.5 7 21l5-3 5 3-1.5-8.5"/>' },
+    { name: 'Cover Letter', sub: 'PDF · 1 page', file: 'assets/cover-letter.pdf',
+      icon: '<path d="M4 4h16v16H4z" style="display:none"/><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>' },
+  ];
+
+  const docsOverlay = document.getElementById('docsOverlay');
+  const docsList = document.getElementById('docsList');
+  const docsClose = document.getElementById('docsClose');
+  const openDocsBtn = document.getElementById('openDocsBtn');
+
   const pwOverlay = document.getElementById('pwOverlay');
   const pwBox = pwOverlay.querySelector('.pw-box');
   const pwForm = document.getElementById('pwForm');
@@ -1145,13 +1191,43 @@
   const pwError = document.getElementById('pwError');
   const pwClose = document.getElementById('pwClose');
   const pwToggle = document.getElementById('pwToggle');
+  const pwSub = document.getElementById('pwSub');
+  let pendingDoc = null;
 
   async function sha256Hex(text) {
     const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
     return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
   }
 
-  function requestCvDownload() {
+  function renderDocsList() {
+    docsList.innerHTML = DOCUMENTS.map((doc, i) => `
+      <li class="docs-item" data-idx="${i}">
+        <span class="di-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${doc.icon}</svg></span>
+        <span class="di-text"><span class="di-name">${doc.name}</span><span class="di-sub">${doc.sub}</span></span>
+        <span class="di-arrow">→</span>
+      </li>`).join('');
+    docsList.querySelectorAll('.docs-item').forEach(el => {
+      el.addEventListener('click', () => {
+        const doc = DOCUMENTS[Number(el.getAttribute('data-idx'))];
+        closeDocsList();
+        requestDocPreview(doc);
+      });
+    });
+  }
+  function openDocsList() {
+    renderDocsList();
+    docsOverlay.classList.add('open');
+  }
+  function closeDocsList() {
+    docsOverlay.classList.remove('open');
+  }
+  docsClose.addEventListener('click', closeDocsList);
+  docsOverlay.addEventListener('click', (e) => { if (e.target === docsOverlay) closeDocsList(); });
+  openDocsBtn.addEventListener('click', (e) => { e.preventDefault(); openDocsList(); });
+
+  function requestDocPreview(doc) {
+    pendingDoc = doc;
+    pwSub.textContent = `Enter the password to view "${doc.name}"`;
     pwInput.value = '';
     pwInput.type = 'password';
     pwError.classList.remove('show');
@@ -1171,13 +1247,8 @@
   pwForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const enteredHash = await sha256Hex(pwInput.value.trim());
-    if (enteredHash === CV_PASSWORD_HASH) {
-      const link = document.createElement('a');
-      link.href = CV_PATH;
-      link.download = 'Mosharraf_Hossain_CV.pdf';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+    if (enteredHash === DOC_PASSWORD_HASH && pendingDoc) {
+      window.open(pendingDoc.file, '_blank');
       closePwModal();
     } else {
       pwError.classList.add('show');
@@ -1187,10 +1258,6 @@
       pwInput.value = '';
       pwInput.focus();
     }
-  });
-  document.getElementById('downloadCvBtn').addEventListener('click', (e) => {
-    e.preventDefault();
-    requestCvDownload();
   });
 </script>
 
