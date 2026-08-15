@@ -9,9 +9,12 @@
     try {
       var m = localStorage.getItem('theme-mode');
       var a = localStorage.getItem('theme-accent');
-      if (m && m !== 'system') document.documentElement.setAttribute('data-theme', m);
+      if (!m) { m = 'dark'; } // no saved choice yet — always show the original look, not the visitor's OS setting
+      if (m !== 'system') document.documentElement.setAttribute('data-theme', m);
       if (a && a !== 'cyan') document.documentElement.setAttribute('data-accent', a);
-    } catch(e) {}
+    } catch(e) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
   })();
 </script>
 <meta name="google-site-verification" content="SvitTqhl3idRkwoKguPbtdL07UdxxcAWnmg7UgjtpTI" />
@@ -1468,8 +1471,8 @@
   themeOverlay.addEventListener('click', (e) => { if (e.target === themeOverlay) themeOverlay.classList.remove('open'); });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && themeOverlay.classList.contains('open')) themeOverlay.classList.remove('open'); });
 
-  let savedMode = 'system', savedAccent = 'cyan';
-  try { savedMode = localStorage.getItem('theme-mode') || 'system'; } catch(e) {}
+  let savedMode = 'dark', savedAccent = 'cyan';
+  try { savedMode = localStorage.getItem('theme-mode') || 'dark'; } catch(e) {}
   try { savedAccent = localStorage.getItem('theme-accent') || 'cyan'; } catch(e) {}
   applyMode(savedMode, false);
   applyAccent(savedAccent, false);
