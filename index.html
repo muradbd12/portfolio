@@ -592,6 +592,12 @@
   }
   .theme-swatch:hover{transform:scale(1.12);}
   .theme-swatch.active{box-shadow:0 0 0 3px var(--bg-panel), 0 0 0 5px var(--sw);}
+  .theme-reset{
+    margin-top:18px;width:100%;padding:9px 0;border-radius:8px;border:1px dashed var(--border-strong);
+    background:transparent;color:var(--text-faint);font-family:'IBM Plex Mono',monospace;font-size:11px;
+    letter-spacing:0.04em;cursor:pointer;transition:all .2s;
+  }
+  .theme-reset:hover{color:var(--accent);border-color:var(--accent-line);}
 
   /* ---------- LIGHTBOX (click-to-enlarge) ---------- */
   .lightbox-overlay{
@@ -757,6 +763,7 @@
         <button class="theme-swatch" data-accent="rose" style="--sw:#fb7185" title="Rose" aria-label="Rose"></button>
       </div>
     </div>
+    <button class="theme-reset" id="themeReset">↺ Reset to default</button>
   </div>
 </div>
 
@@ -1470,6 +1477,12 @@
   themeClose.addEventListener('click', () => themeOverlay.classList.remove('open'));
   themeOverlay.addEventListener('click', (e) => { if (e.target === themeOverlay) themeOverlay.classList.remove('open'); });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && themeOverlay.classList.contains('open')) themeOverlay.classList.remove('open'); });
+
+  document.getElementById('themeReset').addEventListener('click', () => {
+    try { localStorage.removeItem('theme-mode'); localStorage.removeItem('theme-accent'); } catch(e) {}
+    applyMode('dark', false);
+    applyAccent('cyan', false);
+  });
 
   let savedMode = 'dark', savedAccent = 'cyan';
   try { savedMode = localStorage.getItem('theme-mode') || 'dark'; } catch(e) {}
