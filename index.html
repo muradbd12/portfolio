@@ -2,6 +2,18 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<script>
+  // Restore saved theme before first paint (runs on the real hosted site — in Claude's own
+  // in-chat preview, localStorage may be blocked, in which case this just quietly no-ops).
+  (function(){
+    try {
+      var m = localStorage.getItem('theme-mode');
+      var a = localStorage.getItem('theme-accent');
+      if (m && m !== 'system') document.documentElement.setAttribute('data-theme', m);
+      if (a && a !== 'cyan') document.documentElement.setAttribute('data-accent', a);
+    } catch(e) {}
+  })();
+</script>
 <meta name="google-site-verification" content="SvitTqhl3idRkwoKguPbtdL07UdxxcAWnmg7UgjtpTI" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mosharraf Hossain Murad — Systems & Network Engineer | Chattogram, Bangladesh</title>
@@ -117,6 +129,49 @@
     --shadow-md: 0 12px 32px -12px rgba(0,0,0,0.55), 0 0 20px var(--accent-glow);
     --shadow-lg: 0 28px 60px -18px rgba(0,0,0,0.65), 0 0 40px var(--accent-glow);
   }
+
+  /* ---------- THEME: light mode (explicit, or system when no override is set) ---------- */
+  html[data-theme="light"]{
+    --bg:#f7f8fb; --bg-panel:#ffffff; --bg-panel-alt:#eef1f7;
+    --text-primary:#14192b; --text-muted:#4b5875; --text-faint:#8993ab;
+    --border:rgba(20,25,43,0.09); --border-strong:rgba(20,25,43,0.18);
+    --status:#059669;
+    --shadow-sm: 0 1px 2px rgba(20,25,43,0.06), 0 1px 3px rgba(20,25,43,0.08);
+    --shadow-md: 0 12px 32px -14px rgba(20,25,43,0.18), 0 0 20px var(--accent-glow);
+    --shadow-lg: 0 28px 60px -20px rgba(20,25,43,0.22), 0 0 40px var(--accent-glow);
+  }
+  @media (prefers-color-scheme: light){
+    html:not([data-theme]){
+      --bg:#f7f8fb; --bg-panel:#ffffff; --bg-panel-alt:#eef1f7;
+      --text-primary:#14192b; --text-muted:#4b5875; --text-faint:#8993ab;
+      --border:rgba(20,25,43,0.09); --border-strong:rgba(20,25,43,0.18);
+      --status:#059669;
+      --shadow-sm: 0 1px 2px rgba(20,25,43,0.06), 0 1px 3px rgba(20,25,43,0.08);
+      --shadow-md: 0 12px 32px -14px rgba(20,25,43,0.18), 0 0 20px var(--accent-glow);
+      --shadow-lg: 0 28px 60px -20px rgba(20,25,43,0.22), 0 0 40px var(--accent-glow);
+    }
+  }
+
+  /* ---------- ACCENT COLOR VARIANTS (cyan = default, no override needed) ---------- */
+  html[data-accent="violet"]{
+    --accent:#a78bfa; --accent-hover:#c4b5fd; --on-accent:#1e1b3a;
+    --accent-soft:rgba(167,139,250,0.10); --accent-line:rgba(167,139,250,0.4); --accent-glow:rgba(167,139,250,0.22);
+  }
+  html[data-accent="emerald"]{
+    --accent:#34d399; --accent-hover:#6ee7b7; --on-accent:#052e22;
+    --accent-soft:rgba(52,211,153,0.10); --accent-line:rgba(52,211,153,0.4); --accent-glow:rgba(52,211,153,0.22);
+  }
+  html[data-accent="amber"]{
+    --accent:#fbbf24; --accent-hover:#fcd34d; --on-accent:#3a2504;
+    --accent-soft:rgba(251,191,36,0.10); --accent-line:rgba(251,191,36,0.4); --accent-glow:rgba(251,191,36,0.22);
+  }
+  html[data-accent="rose"]{
+    --accent:#fb7185; --accent-hover:#fda4af; --on-accent:#3a0f16;
+    --accent-soft:rgba(251,113,133,0.10); --accent-line:rgba(251,113,133,0.4); --accent-glow:rgba(251,113,133,0.22);
+  }
+  html{transition:background-color .25s ease;}
+  body{transition:background-color .25s ease, color .25s ease;}
+
   *{margin:0;padding:0;box-sizing:border-box;}
   html{scroll-behavior:smooth;}
   body{
@@ -486,6 +541,55 @@
     border:1px solid var(--border-strong);border-radius:6px;padding:2px 7px;margin-left:8px;
   }
 
+  /* ---------- THEME PICKER ---------- */
+  .theme-trigger{
+    display:flex;align-items:center;justify-content:center;width:28px;height:24px;
+    border:1px solid var(--border-strong);border-radius:6px;margin-left:8px;
+    background:var(--bg-panel);color:var(--text-faint);cursor:pointer;transition:all .2s;
+  }
+  .theme-trigger:hover{color:var(--accent);border-color:var(--accent);}
+  .theme-trigger svg{width:14px;height:14px;}
+  .theme-overlay{
+    position:fixed;inset:0;z-index:1500;background:rgba(3,6,14,0.6);backdrop-filter:blur(2px);
+    display:none;align-items:flex-start;justify-content:center;padding-top:14vh;
+  }
+  .theme-overlay.open{display:flex;}
+  .theme-box{
+    width:min(320px,88vw);background:var(--bg-panel);border:1px solid var(--border-strong);
+    border-radius:14px;box-shadow:var(--shadow-lg);padding:20px;
+  }
+  .theme-head{
+    display:flex;justify-content:space-between;align-items:center;
+    font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text-faint);
+    letter-spacing:0.08em;margin-bottom:18px;
+  }
+  .theme-close{
+    background:transparent;border:1px solid var(--border-strong);color:var(--text-faint);
+    width:24px;height:24px;border-radius:50%;cursor:pointer;font-size:11px;
+    display:flex;align-items:center;justify-content:center;transition:all .2s;
+  }
+  .theme-close:hover{color:var(--accent);border-color:var(--accent);}
+  .theme-section{margin-bottom:18px;}
+  .theme-section:last-child{margin-bottom:0;}
+  .theme-label{
+    font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--text-faint);
+    text-transform:uppercase;letter-spacing:0.07em;margin-bottom:10px;
+  }
+  .theme-pills{display:flex;gap:8px;}
+  .theme-pill{
+    flex:1;padding:9px 0;border-radius:8px;border:1px solid var(--border-strong);background:var(--bg);
+    color:var(--text-muted);font-family:'Inter',sans-serif;font-size:12.5px;cursor:pointer;transition:all .2s;
+  }
+  .theme-pill:hover{border-color:var(--accent-line);color:var(--text-primary);}
+  .theme-pill.active{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);}
+  .theme-swatches{display:flex;gap:12px;}
+  .theme-swatch{
+    width:30px;height:30px;border-radius:50%;border:none;cursor:pointer;
+    background:var(--sw);position:relative;transition:transform .2s;
+  }
+  .theme-swatch:hover{transform:scale(1.12);}
+  .theme-swatch.active{box-shadow:0 0 0 3px var(--bg-panel), 0 0 0 5px var(--sw);}
+
   /* ---------- LIGHTBOX (click-to-enlarge) ---------- */
   .lightbox-overlay{
     position:fixed;inset:0;z-index:2000;background:rgba(3,6,14,0.92);
@@ -613,6 +717,9 @@
   </nav>
   <a href="#contact" class="nav-cta" id="desktopCta">N07 · Contact</a>
   <button class="cmdk-trigger mono" id="cmdkTrigger" style="cursor:pointer;background:var(--bg-panel);" title="Quick navigate">⌘K</button>
+  <button class="theme-trigger" id="themeTrigger" title="Customize theme" aria-label="Customize theme">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>
+  </button>
   <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
 </header>
 
@@ -622,6 +729,31 @@
     <input class="cmdk-input" id="cmdkInput" type="text" placeholder="Jump to a section or run a command…" autocomplete="off">
     <ul class="cmdk-list" id="cmdkList"></ul>
     <div class="cmdk-hint"><span>↑↓ navigate</span><span>↵ select</span><span>esc close</span></div>
+  </div>
+</div>
+
+<!-- THEME PICKER -->
+<div class="theme-overlay" id="themeOverlay">
+  <div class="theme-box">
+    <div class="theme-head"><span>APPEARANCE</span><button class="theme-close" id="themeClose" aria-label="Close">✕</button></div>
+    <div class="theme-section">
+      <div class="theme-label">Mode</div>
+      <div class="theme-pills" id="modePills">
+        <button class="theme-pill" data-mode="system">System</button>
+        <button class="theme-pill" data-mode="light">Light</button>
+        <button class="theme-pill" data-mode="dark">Dark</button>
+      </div>
+    </div>
+    <div class="theme-section">
+      <div class="theme-label">Accent color</div>
+      <div class="theme-swatches" id="accentSwatches">
+        <button class="theme-swatch" data-accent="cyan" style="--sw:#22d3ee" title="Cyan" aria-label="Cyan"></button>
+        <button class="theme-swatch" data-accent="violet" style="--sw:#a78bfa" title="Violet" aria-label="Violet"></button>
+        <button class="theme-swatch" data-accent="emerald" style="--sw:#34d399" title="Emerald" aria-label="Emerald"></button>
+        <button class="theme-swatch" data-accent="amber" style="--sw:#fbbf24" title="Amber" aria-label="Amber"></button>
+        <button class="theme-swatch" data-accent="rose" style="--sw:#fb7185" title="Rose" aria-label="Rose"></button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1074,7 +1206,7 @@
 <script>
   // ---- Contact form via Web3Forms (no email client popup) ----
   // Get a free access key at https://web3forms.com and paste it below.
-  const WEB3FORMS_KEY = "YOUR_WEB3FORMS_ACCESS_KEY";
+  const WEB3FORMS_KEY = "ed2cfa7a-ee40-43d6-8618-8efe7a2de1ec";
   document.getElementById('contactForm').addEventListener('submit', async function(e){
     e.preventDefault();
     const btn = this.querySelector('button.submit-btn');
@@ -1307,6 +1439,40 @@
       pwInput.focus();
     }
   });
+
+  // ---- Theme & accent picker ----
+  const htmlEl = document.documentElement;
+  const themeTrigger = document.getElementById('themeTrigger');
+  const themeOverlay = document.getElementById('themeOverlay');
+  const themeClose = document.getElementById('themeClose');
+  const modePills = document.querySelectorAll('.theme-pill');
+  const accentSwatches = document.querySelectorAll('.theme-swatch');
+
+  function applyMode(mode, save) {
+    if (mode === 'system') { htmlEl.removeAttribute('data-theme'); }
+    else { htmlEl.setAttribute('data-theme', mode); }
+    modePills.forEach(p => p.classList.toggle('active', p.getAttribute('data-mode') === mode));
+    if (save) { try { localStorage.setItem('theme-mode', mode); } catch(e) {} }
+  }
+  function applyAccent(accent, save) {
+    if (accent === 'cyan') { htmlEl.removeAttribute('data-accent'); }
+    else { htmlEl.setAttribute('data-accent', accent); }
+    accentSwatches.forEach(s => s.classList.toggle('active', s.getAttribute('data-accent') === accent));
+    if (save) { try { localStorage.setItem('theme-accent', accent); } catch(e) {} }
+  }
+  modePills.forEach(p => p.addEventListener('click', () => applyMode(p.getAttribute('data-mode'), true)));
+  accentSwatches.forEach(s => s.addEventListener('click', () => applyAccent(s.getAttribute('data-accent'), true)));
+
+  themeTrigger.addEventListener('click', () => themeOverlay.classList.add('open'));
+  themeClose.addEventListener('click', () => themeOverlay.classList.remove('open'));
+  themeOverlay.addEventListener('click', (e) => { if (e.target === themeOverlay) themeOverlay.classList.remove('open'); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && themeOverlay.classList.contains('open')) themeOverlay.classList.remove('open'); });
+
+  let savedMode = 'system', savedAccent = 'cyan';
+  try { savedMode = localStorage.getItem('theme-mode') || 'system'; } catch(e) {}
+  try { savedAccent = localStorage.getItem('theme-accent') || 'cyan'; } catch(e) {}
+  applyMode(savedMode, false);
+  applyAccent(savedAccent, false);
 </script>
 
 </body>
